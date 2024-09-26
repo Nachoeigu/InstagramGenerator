@@ -1,4 +1,4 @@
-#InstagramGenerator
+# InstagramGenerator
 This software is based on LangGraph and it helps Content Creators to automate part of their job. Why? Because, it is an AI app that generates content of whatever topic you want based on your requirements.
 
 ### What should you input?
