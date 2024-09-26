@@ -25,7 +25,7 @@ class ContentCreatorVideoStructuredOutput(TypedDict):
     """
     video_title: str = Field(description = "The title of the video, displayed before start it")
     video_description: str = Field(description = "The description of the post, below the content itself. Use hashtags and emojis if needed")
-    text_in_video: str = Field(description = "A list with all the speech/text should be said or displayed, inside the video.")
+    text_in_video: List[str] = Field(description = "A list with all the speech/text should be said or displayed, inside the video.")
     
 class ContentCreatorCarrouselStructuredOutput(TypedDict):
     """
@@ -39,7 +39,7 @@ class ContentCreatorPictureStructuredOutput(TypedDict):
     """
     The structured answer of the social media manager for picture content
     """
-    text_in_image: List[str] = Field(description = "Place the text which should go inside the picture.")
+    text_in_image: str = Field(description = "Place the text which should go inside the picture.")
     description: str = Field(description = "The description of the post, below the content itself. Use hashtags and emojis if needed")
 
 
@@ -62,7 +62,7 @@ class GraphInput(TypedDict):
     """
     The initial message that starts the AI system
     """
-    media_type: Literal["carrousel", "one picture", "video"]
+    media_type: Literal["Carrousel Post", "Photo Post", "Video Post"]
     language: Literal['english', 'spanish', 'portuguese', 'poland', 'french', 'german', 'italian', 'dutch','swedish', 'norwegian', 'danish', 'finnish', 'russian', 'chinese', 'japanese', 'korean','arabic', 'turkish', 'greek', 'hebrew']
     topic: str
     target_audience: str
@@ -76,7 +76,7 @@ class GraphOutput(TypedDict):
     content_generations: List[str]
 
 class State(TypedDict):
-    media_type: Literal["carrousel", "one picture", "video"]
+    media_type: Literal["Carrousel Post", "Photo Post", "Video Post"]
     language: Literal['english', 'spanish', 'portuguese', 'poland', 'french', 'german', 'italian', 'dutch','swedish', 'norwegian', 'danish', 'finnish', 'russian', 'chinese', 'japanese', 'korean','arabic', 'turkish', 'greek', 'hebrew']
     topic: str
     what_is_profile_about: str

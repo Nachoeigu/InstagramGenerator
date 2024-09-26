@@ -16,17 +16,17 @@ def content_generator(state: State, config: GraphConfig) -> State:
     model = _get_model(config, key = 'content')
     
     if state['content_generations'] == []:
-        model_input = [SystemMessage(content = CONTENT_GENERATOR), HumanMessage(content = f"The user requests a {state['media_type']} post focused on {state['topic']}. The content should be tailored to resonate with the {state['target_audience']}. The account is about {state['what_is_profile_about']}", id = uuid.uuid1())]
+        model_input = [SystemMessage(content = CONTENT_GENERATOR), HumanMessage(content = f"The user requests a {state['media_type']} focused on {state['topic']}. The content should be tailored to resonate with the {state['target_audience']}. The account is about {state['what_is_profile_about']}", id = uuid.uuid1())]
     else:
-        model_input = [SystemMessage(content = CONTENT_GENERATOR), HumanMessage(content = f"The user requests a {state['media_type']} post focused on {state['topic']}. The content should be tailored to resonate with the {state['target_audience']}. The account is about {state['what_is_profile_about']}", id = uuid.uuid1())] + state['content_generations']
+        model_input = [SystemMessage(content = CONTENT_GENERATOR), HumanMessage(content = f"The user requests a {state['media_type']} focused on {state['topic']}. The content should be tailored to resonate with the {state['target_audience']}. The account is about {state['what_is_profile_about']}", id = uuid.uuid1())] + state['content_generations']
 
     media_type = state['media_type']
 
-    if media_type == 'carrousel':
+    if media_type == 'Carrousel Post':
         model = model.with_structured_output(ContentCreatorCarrouselStructuredOutput)
-    elif media_type == 'one picture':
+    elif media_type == 'Photo Post':
         model = model.with_structured_output(ContentCreatorPictureStructuredOutput)
-    elif media_type == 'video':
+    elif media_type == 'Video Post':
         model = model.with_structured_output(ContentCreatorVideoStructuredOutput)
     
     result = model.invoke(model_input)
@@ -39,14 +39,14 @@ def content_critique(state: State, config: GraphConfig) -> State:
     n_critiques = state.get("critique_iterations", 0)
 
     if n_critiques == 0:
-        model_input = [SystemMessage(content = CONTENT_CRITIQUE.format(topic=state['topic'],target_audience=state['target_audience'], profile_about=state['what_is_profile_about'])), HumanMessage(content = content_generation.content, id = uuid.uuid4())]
+        model_input = [SystemMessage(content = CONTENT_CRITIQUE.format(topic=state['topic'],target_audience=state['target_audience'], profile_about=state['what_is_profile_about'], media_type=state['media_type'])), HumanMessage(content = content_generation.content, id = uuid.uuid4())]
     else:
-        model_input = [SystemMessage(content = CONTENT_CRITIQUE.format(topic=state['topic'],target_audience=state['target_audience'], profile_about=state['what_is_profile_about'])), HumanMessage(content = content_generation.content, id = uuid.uuid4())] + state['critique_generations'] + [content_generation]
+        model_input = [SystemMessage(content = CONTENT_CRITIQUE.format(topic=state['topic'],target_audience=state['target_audience'], profile_about=state['what_is_profile_about'], media_type=state['media_type'])), HumanMessage(content = content_generation.content, id = uuid.uuid4())] + state['critique_generations'] + [content_generation]
         
     result = model.invoke(model_input)
 
     return {'critique_generations': [result],
-            'content_generations': [HumanMessage(content = result.content, id = uuid.uuid4())],
+            'content_generations': [HumanMessage(content = "Here is my critique and feedback:\n"+ result.content, id = uuid.uuid4())],
             'critique_iterations': n_critiques + 1}
 
 def generate_translation(state: State, config: GraphConfig) -> State:
